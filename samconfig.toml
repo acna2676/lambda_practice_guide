@@ -1,0 +1,11 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "stack-sam-example-email"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-b50fa4nr27u0"
+s3_prefix = "stack-sam-example-email"
+region = "ap-northeast-1"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "MailAddress=\"acna2676@gmail.com\" MailTableName=\"mailaddress2\" BucketName=\"mailbody222222\""
+image_repositories = []
