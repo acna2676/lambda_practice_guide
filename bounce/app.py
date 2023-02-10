@@ -10,7 +10,7 @@ table = dynamodb.Table(os.environ['MAILTABLE'])
 
 def lambda_handler(event, context):
 
-    queue = sqs.get_queue_by_name(QueueuName=os.environ['QUUENAME'])
+    queue = sqs.get_queue_by_name(QueueName=os.environ['QUEUENAME'])
     for rec in event['Records']:
         message = rec['Sns']['Message']
 

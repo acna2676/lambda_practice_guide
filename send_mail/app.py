@@ -14,7 +14,6 @@ MAILFROM = os.environ['MAILADDRESS']
 
 def lambda_handler(event, context):
 
-    queue = sqs.get_queue_by_name(QueueuName=os.environ['QUUENAME'])
     for rec in event['Records']:
         email = rec['body']
 
@@ -27,30 +26,30 @@ def lambda_handler(event, context):
         data = maildata.split("\n", 3)
         subject = data[0]
         body = data[2]
-        response = table.update_item(Key={'email': email}, UpdateExpression="set issend=:val", ExpressionAttributeValue={
+        response = table.update_item(Key={'email': email}, UpdateExpression="set issend=:val", ExpressionAttributeValues={
             ':val': 1
         },
             ReturnValues='UPDATED_OLD'
         )
-    if response['Attributes']['issend'] == 0:
-        response = client.send_email(
-            Source=MAILFROM,
-            ReplyToAddresses=[MAILFROM],
-            Destination={
-                'ToAddresses': [email],
-            },
-            Message={
-                'Subject': {
-                    'Date': subject,
-                    'Charset': 'UTF-8'
+        if response['Attributes']['issend'] == 0:
+            response = client.send_email(
+                Source=MAILFROM,
+                ReplyToAddresses=[MAILFROM],
+                Destination={
+                    'ToAddresses': [email],
                 },
-                'Body': {
-                    'Text': {
-                        'Date': body,
+                Message={
+                    'Subject': {
+                        'Data': subject,
                         'Charset': 'UTF-8'
+                    },
+                    'Body': {
+                        'Text': {
+                            'Data': body,
+                            'Charset': 'UTF-8'
+                        }
                     }
                 }
-            }
-        )
-    else:
-        print('Resend Skip')
+            )
+        else:
+            print('Resend Skip')

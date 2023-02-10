@@ -42,8 +42,8 @@ Resources:
       AttributeDefinitions:
         - AttributeName: email
           AttributeType: S
-        # - AttributeName: haserror
-        #   AttributeType: N
+        - AttributeName: haserror
+          AttributeType: N
       KeySchema:
         - AttributeName: email
           KeyType: HASH
@@ -53,7 +53,7 @@ Resources:
       GlobalSecondaryIndexes:
         - IndexName: haserror-index
           KeySchema:
-            - AttributeName: email
+            - AttributeName: haserror
               KeyType: HASH
           Projection:
             ProjectionType: ALL
@@ -77,8 +77,15 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref MailTable
-        - SQSSendMessagePolicy:
-            QueueName: !GetAtt SendQueue.QueueName
+        # - SQSSendMessagePolicy:
+        #     QueueName: !GetAtt SendQueue.QueueName
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - sqs:SendMessage*
+                - sqs:GetQueueUrl*
+              Resource: !GetAtt SendQueue.Arn
       Events:
         BodyUploadEvent:
           Type: S3
